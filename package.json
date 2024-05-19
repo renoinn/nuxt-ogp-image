@@ -1,0 +1,27 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "microcms-js-sdk": "^3.1.1",
+    "nuxt": "^3.11.2",
+    "nuxt-og-image": "3.0.0-rc.53",
+    "satori": "^0.10.13",
+    "satori-html": "^0.3.2",
+    "sharp": "^0.33.4",
+    "v-satori": "^0.2.0",
+    "vue": "^3.4.27",
+    "vue-router": "^4.3.2"
+  },
+  "packageManager": "pnpm@9.1.1+sha256.9551e803dcb7a1839fdf5416153a844060c7bce013218ce823410532504ac10b",
+  "devDependencies": {
+    "unplugin-font-to-buffer": "^0.2.0"
+  }
+}
