@@ -10,4 +10,8 @@ export default defineNuxtConfig({
     'unplugin-font-to-buffer/nuxt',
     'v-satori/nuxt',
   ],
+  runtimeConfig: {
+    apiKey: API_KEY,
+    serviceDomain: SERVICE_DOMAIN,
+  }
 })

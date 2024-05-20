@@ -11,11 +11,6 @@ export type Blog = {
   content?: string;
 };
 
-const { API_KEY, SERVICE_DOMAIN } = process.env;
-const client = createClient({
-  serviceDomain: String(SERVICE_DOMAIN),
-  apiKey: String(API_KEY),
-})
 
 export default defineEventHandler(async (event) => {
   const id: string | undefined = getRouterParam(event, 'id')
@@ -23,6 +18,12 @@ export default defineEventHandler(async (event) => {
   if (id == undefined) {
     return;
   }
+
+  const config = useRuntimeConfig(event)
+  const client = createClient({
+    apiKey: config.apiKey,
+    serviceDomain: config.serviceDomain,
+  })
 
   const data = await client.getListDetail<Blog>({
     endpoint: "blogs",
