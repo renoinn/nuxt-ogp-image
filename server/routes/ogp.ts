@@ -37,9 +37,12 @@ export default defineEventHandler(async (event) => {
   const expectedSignature = crypto.createHmac('sha256', config.webhookSignature).update(body).digest('hex')
 
   if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+    console.log(`invalid signature ${signature}`)
     setResponseStatus(event, 401)
     return
   }
+
+  console.log(body.contents)
 
   const title = body.contents?.new?.publishValue.title ?? ''
   const png = await generateImageWithTitle(title)
