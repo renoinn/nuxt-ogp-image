@@ -4,7 +4,8 @@ import sharp from 'sharp'
 import Article from '@/components/OgImage/Article.vue'
 import NotoSansJP from '@/assets/server/NotoSansJP-Light.ttf'
 
-import { createClient } from "microcms-js-sdk";
+import { createClient } from "microcms-js-sdk"
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 
 export type Blog = {
   title?: string;
@@ -30,8 +31,33 @@ export default defineEventHandler(async (event) => {
     contentId: String(id),
   })
 
-  const title = data.title
+  const title = data.title ?? ''
+  const png = await generateImageWithTitle(title)
 
+  const s3 = new S3Client({
+    region: 'auto',
+    endpoint: config.r2Endpoint,
+    credentials: {
+      accessKeyId: config.r2AccessKeyId,
+      secretAccessKey: config.r2AccessKeySecret,
+    }
+  })
+
+  const fileName = `${id}/og-image.png`
+  await sendImage(s3, fileName, png)
+})
+
+const sendImage = async (client: S3Client, fileName: string, buffer: Buffer) => {
+  const command = new PutObjectCommand({
+    Bucket: 'oomori-ogp',
+    Key: fileName,
+    Body: buffer,
+  })
+  const res = await client.send(command)
+  console.log(res)
+}
+
+const generateImageWithTitle = async (title: String): Promise<Buffer> => {
   const svg = await satori(
     Article,
     {
@@ -50,10 +76,5 @@ export default defineEventHandler(async (event) => {
     },
   )
 
-  const png = await sharp(Buffer.from(svg)).png().toBuffer()
-
-  setHeader(event, "Content-Type", `image/png`)
-  setHeader(event, "Cache-Control", "public, max-age=604800")
-
-  return png
-})
+  return await sharp(Buffer.from(svg)).png().toBuffer()
+}
