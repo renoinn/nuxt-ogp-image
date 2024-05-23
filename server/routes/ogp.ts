@@ -32,9 +32,9 @@ type ContentInfo = {
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
-  const signature = useRequestHeader('X-MICROCMS-Signature')
+  const signature = getRequestHeader(event, 'X-MICROCMS-Signature')
   const body = await readBody<WebhookBody>(event)
-  const expectedSignature = crypto.createHmac('sha256', config.webhookSignature).update(body).digest('hex')
+  const expectedSignature = crypto.createHmac('sha256', config.webhookSignature).update(JSON.stringify(body)).digest('hex')
 
   if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
     console.log(`invalid signature ${signature}`)
