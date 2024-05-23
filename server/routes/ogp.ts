@@ -1,37 +1,47 @@
+import crypto from 'crypto'
 import { satori } from 'v-satori'
-import { html } from 'satori-html'
 import sharp from 'sharp'
 import Article from '@/components/OgImage/Article.vue'
 import NotoSansJP from '@/assets/server/NotoSansJP-Light.ttf'
 
-import { createClient } from "microcms-js-sdk"
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 
-export type Blog = {
-  title?: string;
-  content?: string;
-};
+type WebhookBody = {
+  service: string,
+  api: string,
+  id: string,
+  type: string,
+  contents: Contents | null,
+}
 
+type Contents = {
+  old: ContentInfo | null,
+  new: ContentInfo | null,
+}
+
+type ContentInfo = {
+  id: string,
+  status: Array<String>,
+  draftKey: string | null,
+  publishValue: {
+    id: string,
+    title: string
+  },
+  draftValue: null,
+}
 
 export default defineEventHandler(async (event) => {
-  const id: string | undefined = getRouterParam(event, 'id')
+  const config = useRuntimeConfig(event)
+  const signature = useRequestHeader('X-MICROCMS-Signature')
+  const body = await readBody<WebhookBody>(event)
+  const expectedSignature = crypto.createHmac('sha256', config.webhookSignature).update(body).digest('hex')
 
-  if (id == undefined) {
-    return;
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+    setResponseStatus(event, 401)
+    return
   }
 
-  const config = useRuntimeConfig(event)
-  const client = createClient({
-    apiKey: config.apiKey,
-    serviceDomain: config.serviceDomain,
-  })
-
-  const data = await client.getListDetail<Blog>({
-    endpoint: "blogs",
-    contentId: String(id),
-  })
-
-  const title = data.title ?? ''
+  const title = body.contents?.new?.publishValue.title ?? ''
   const png = await generateImageWithTitle(title)
 
   const s3 = new S3Client({
@@ -43,6 +53,7 @@ export default defineEventHandler(async (event) => {
     }
   })
 
+  const id = body.contents?.new?.id
   const fileName = `${id}/og-image.png`
   await sendImage(s3, fileName, png)
 })
