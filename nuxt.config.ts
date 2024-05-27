@@ -1,4 +1,4 @@
-const { API_KEY, SERVICE_DOMAIN, WEBHOOK_SIGNATURE, R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_ACCESS_KEY_SECRET } = process.env;
+const { API_KEY, SERVICE_DOMAIN, WEBHOOK_SIGNATURE, R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_ACCESS_KEY_SECRET, } = process.env;
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({

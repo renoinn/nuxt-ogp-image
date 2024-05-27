@@ -42,8 +42,6 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  console.log(body.contents)
-
   const title = body.contents?.new?.publishValue.title ?? ''
   const png = await generateImageWithTitle(title)
 
@@ -66,6 +64,7 @@ const sendImage = async (client: S3Client, fileName: string, buffer: Buffer) => 
     Bucket: 'oomori-ogp',
     Key: fileName,
     Body: buffer,
+    ContentType: 'image/png',
   })
   const res = await client.send(command)
   console.log(res)

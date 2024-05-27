@@ -17,6 +17,6 @@ export class CdkStack extends Stack {
     });
     const url = lambda.addFunctionUrl({
       authType: FunctionUrlAuthType.NONE,
-    })
+    });
   }
 }
