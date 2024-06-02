@@ -8,7 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "deploy": "nuxt build && cd cdk && cdk deploy"
+    "deploy": "nuxt build && cd cdk && cdk deploy",
+    "check": "biome check --apply"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.577.0",
@@ -20,6 +21,7 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.7.3",
     "unplugin-font-to-buffer": "^0.2.0"
   },
   "packageManager": "pnpm@9.0.6+sha1.648f6014eb363abb36618f2ba59282a9eeb3e879"
