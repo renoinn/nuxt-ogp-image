@@ -1,4 +1,11 @@
-const { API_KEY, SERVICE_DOMAIN, WEBHOOK_SIGNATURE, R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_ACCESS_KEY_SECRET, } = process.env;
+const {
+  API_KEY,
+  SERVICE_DOMAIN,
+  WEBHOOK_SIGNATURE,
+  R2_ENDPOINT,
+  R2_ACCESS_KEY_ID,
+  R2_ACCESS_KEY_SECRET,
+} = process.env;
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -6,10 +13,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'aws-lambda',
   },
-  modules: [
-    'unplugin-font-to-buffer/nuxt',
-    'v-satori/nuxt',
-  ],
+  modules: ['unplugin-font-to-buffer/nuxt', 'v-satori/nuxt'],
   runtimeConfig: {
     apiKey: API_KEY,
     serviceDomain: SERVICE_DOMAIN,
@@ -17,5 +21,5 @@ export default defineNuxtConfig({
     r2Endpoint: R2_ENDPOINT,
     r2AccessKeyId: R2_ACCESS_KEY_ID,
     r2AccessKeySecret: R2_ACCESS_KEY_SECRET,
-  }
-})
+  },
+});

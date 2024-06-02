@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "deploy": "nuxt build && cd cdk && cdk deploy",
-    "check": "biome check --apply"
+    "lint": "biome lint --apply ./",
+    "check": "biome check --apply ./"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.577.0",

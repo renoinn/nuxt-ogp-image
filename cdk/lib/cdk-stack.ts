@@ -1,6 +1,12 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import { Function, Runtime, AssetCode, FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda';
-import { Construct } from 'constructs';
+import { Duration, Stack, type StackProps } from 'aws-cdk-lib';
+import {
+  AssetCode,
+  // biome-ignore lint/suspicious/noShadowRestrictedNames: aws-lambda use Function
+  Function,
+  FunctionUrlAuthType,
+  Runtime,
+} from 'aws-cdk-lib/aws-lambda';
+import type { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkStack extends Stack {
@@ -11,9 +17,9 @@ export class CdkStack extends Stack {
       functionName: 'OgpImage',
       handler: 'index.handler',
       runtime: Runtime.NODEJS_20_X,
-      code: new AssetCode(`../.output/server/`),
+      code: new AssetCode('../.output/server/'),
       memorySize: 512,
-      timeout: Duration.seconds(30)
+      timeout: Duration.seconds(30),
     });
     const url = lambda.addFunctionUrl({
       authType: FunctionUrlAuthType.NONE,
