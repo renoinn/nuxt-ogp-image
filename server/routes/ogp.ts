@@ -34,10 +34,8 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   const signature = getRequestHeader(event, 'X-MICROCMS-Signature')
   const body = await readBody<WebhookBody>(event)
-  const expectedSignature = crypto.createHmac('sha256', config.webhookSignature).update(JSON.stringify(body)).digest('hex')
 
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
-    console.log(`invalid signature ${signature}`)
+  if (validateSignature(signature, body, config.webhookSignature)) {
     setResponseStatus(event, 401)
     return
   }
@@ -58,6 +56,17 @@ export default defineEventHandler(async (event) => {
   const fileName = `${id}/og-image.png`
   await sendImage(s3, fileName, png)
 })
+
+const validateSignature = (signature: string, body: WebhookBody, webhookSignature: string): boolean => {
+
+  const expectedSignature = crypto.createHmac('sha256', webhookSignature).update(JSON.stringify(body)).digest('hex')
+
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+    console.log(`invalid signature ${signature}`)
+    return false;
+  }
+  return true;
+}
 
 const sendImage = async (client: S3Client, fileName: string, buffer: Buffer) => {
   const command = new PutObjectCommand({
