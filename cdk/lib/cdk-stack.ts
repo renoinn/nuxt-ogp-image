@@ -16,7 +16,7 @@ export class CdkStack extends Stack {
     const lambda = new Function(this, 'OgpImage', {
       functionName: 'OgpImage',
       handler: 'index.handler',
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       code: new AssetCode('../.output/server/'),
       memorySize: 512,
       timeout: Duration.seconds(30),
